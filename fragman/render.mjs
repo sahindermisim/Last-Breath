@@ -3,6 +3,7 @@
 //   node render.mjs --fps=60            → 60 fps
 //   node render.mjs --from=60 --to=75   → yalnızca bir aralık (hızlı kontrol)
 //   node render.mjs --workers=4         → paralel sekme sayısı
+//   node render.mjs --audio-only        → yalnızca sesi yeniden mix'leyip mevcut cikti/trailer.mp4'e yerleştirir
 // Gerekenler: Node 18+, Playwright (Chromium), H.264/AAC destekli ffmpeg (FFMPEG ortam değişkeniyle de verilebilir).
 import http from "node:http";
 import fs from "node:fs";
@@ -82,6 +83,12 @@ const parts = []; for (let i = 0; i < nChunks; i++) parts.push(Buffer.from(await
 const wavPath = path.join(OUT, "audio.wav"); fs.writeFileSync(wavPath, Buffer.concat(parts));
 fs.writeFileSync(path.join(OUT, "trailer.srt"), await main.evaluate(() => RENDER.srt()));
 fs.writeFileSync(path.join(OUT, "montaj.json"), JSON.stringify(await main.evaluate(() => RENDER.montage()), null, 1));
+
+if (args["audio-only"]) {
+  const mp4 = path.join(OUT, "trailer.mp4"), tmp = path.join(OUT, "trailer_tmp.mp4");
+  await run(FF, ["-y", "-v", "error", "-i", mp4, "-i", wavPath, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-shortest", tmp]);
+  fs.renameSync(tmp, mp4); await browser.close(); server.close(); console.log("ses güncellendi: " + mp4); process.exit(0);
+}
 
 // ---------- görüntü ----------
 const total = Math.round((T1 - T0) * FPS), per = Math.ceil(total / WORKERS);

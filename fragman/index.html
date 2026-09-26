@@ -990,7 +990,11 @@ function bed(make, keys, send = 0) { const g = AC.createGain(); keyframes(g.gain
 function buildMix(ac, out, t0, when, musicBuf) {
   AC = ac; MIX = { t0, when }; AR = mulberry(1234); noiseBuf = makeNoise(ac);
   const master = ac.createGain(), comp = ac.createDynamicsCompressor(); comp.threshold.value = -10; comp.ratio.value = 3.5; comp.attack.value = .004; comp.release.value = .25;
-  master.connect(comp).connect(out);
+  const post = ac.createGain(); post.gain.value = .6; // WebAudio kompresörü otomatik makeup gain ekler; kırpılmayı önle
+  const clip = ac.createWaveShaper(), curve = new Float32Array(2048);
+  for (let i = 0; i < 2048; i++) { const x = i / 1023.5 - 1; curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6) * .94; }
+  clip.curve = curve; // yumuşak sınırlayıcı: çıkış 0 dBFS'e ulaşmaz
+  master.connect(comp).connect(post).connect(clip).connect(out);
   bus = ac.createGain(); bus.gain.value = .85; bus.connect(master);
   const conv = ac.createConvolver(); conv.buffer = makeIR(ac); rev = ac.createGain(); rev.gain.value = .5; rev.connect(conv).connect(master);
   const loop = (node, g) => { node.connect(g); node.start(when); node.stop(TT(CONFIG.duration) + .1); };
