@@ -2,4 +2,5 @@
 
 Ashbound Studios'un tepeden bakışlı zombi hayatta kalma oyunu.
 
-- [`reklam/`](reklam/) — 42 saniyelik tarayıcı tabanlı reklam filmi ve senaryosu
+- [`fragman/`](fragman/) — 2:00'lik hikâye fragmanı (v2 brifingi): MP4 üreten render hattı, altyazılar
+- [`reklam/`](reklam/) — 42 saniyelik ilk reklam filmi ve senaryosu
