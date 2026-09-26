@@ -61,7 +61,7 @@ function keyLogo(img) {
   g.putImageData(d, 0, 0);
   return c;
 }
-const ASSET_LABEL = { logo: "Ashbound logosu", keyArt: "Kapak görseli", gameLogo: "LAST BREATH logosu", ethan: "Ethan", sarah: "Sarah", zombie: "Normal zombi", runner: "Koşucu", tank: "Tank", armored: "Zırhlı", music: "Müzik" };
+const ASSET_LABEL = { logo: "Ashbound logosu (giriş)", logoFinal: "Ashbound logosu (kapanış)", gameLogo: "LAST BREATH logosu", music: "Müzik" };
 
 /* Yer tutucu etiketi: eksik bir dosyanın yerine yedek çizim kullanıldığında karede görünür. */
 const STAND = new Set();
@@ -249,7 +249,7 @@ function logoSweep(k, cx, cy, w, alpha) {
 // LAST BREATH: ayrı logo > kapaktaki yazının kırpılması > yer tutucu yazı
 function makeGameTitle() {
   if (IMG.gameLogo) return IMG.gameLogo;
-  const cr = CONFIG.keyArt.titleCrop;
+  const cr = CONFIG.keyArt?.titleCrop;
   if (IMG.keyArt && cr) {
     const iw = IMG.keyArt.naturalWidth, ih = IMG.keyArt.naturalHeight, c = mk(Math.round(cr[2] * iw), Math.round(cr[3] * ih));
     c.getContext("2d").drawImage(IMG.keyArt, cr[0] * iw, cr[1] * ih, c.width, c.height, 0, 0, c.width, c.height); return c;

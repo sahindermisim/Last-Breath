@@ -53,10 +53,10 @@ window.RENDER.ready = (async function boot() {
   makeFx();
   try { await Promise.all([`400 100px "Bebas Neue"`, `300 100px Oswald`, `400 100px Oswald`, `500 100px Oswald`, `600 100px Oswald`].map(f => document.fonts.load(f, "AŞİĞÜÖÇı"))); } catch (e) {}
   await loadAssets();
-  document.getElementById("assets").innerHTML = Object.keys(CONFIG.assets).map(k => `<div><b>${ASSET_LABEL[k]}</b>${STATE[k] ? '<span class="ok">yüklendi</span>' : "eksik · yedek kullanılıyor"}</div>`).join("");
-  CITY = makeCity(); makeSide(); GAME_TITLE = makeGameTitle();
+  document.getElementById("assets").innerHTML = Object.keys(CONFIG.assets).map(k => `<div><b>${ASSET_LABEL[k] || k}</b>${STATE[k] ? '<span class="ok">yüklendi</span>' : "eksik · yedek kullanılıyor"}</div>`).join("");
+  makeSide(); GAME_TITLE = makeGameTitle(); prepFrames();
   let onsets = null; try { const r = await fetch("beats.json"); if (r.ok) onsets = (await r.json()).onsets; } catch (e) {}
-  buildMontage(onsets); buildCues();
+  buildCuts(onsets); buildCues();
   const q = new URLSearchParams(location.search).get("t"); if (q) T = clamp(+q || 0, 0, CONFIG.duration);
   if (!RENDER_MODE) requestAnimationFrame(tick);
   return true;

@@ -3,53 +3,43 @@
    AYARLAR
    ========================================================================= */
 const CONFIG = {
-  duration: 120,
+  duration: 110,
   // Her varlık için sırayla denenecek dosya yolları.
   assets: {
-    logo:     ["assets/ashbound_logo.png", "assets/ashbound_logo.jpg"],
-    keyArt:   ["assets/key_art.jpg", "assets/key_art.png"],
-    gameLogo: ["assets/last_breath_logo.png"],
-    ethan:    ["assets/sprites/ethan.png"],
-    sarah:    ["assets/sprites/sarah.png"],
-    zombie:   ["assets/sprites/zombie_normal.png"],
-    runner:   ["assets/sprites/runner.png"],
-    tank:     ["assets/sprites/tank.png"],
-    armored:  ["assets/sprites/armored.png"],
-    music:    ["assets/music.mp3"],
+    logo:      ["assets/ashbound_logo.jpg"],        // giriş (0:00–0:08) — değiştirilmedi
+    logoFinal: ["assets/ashbound_logo_black.png"],  // kapanış kartı, tam ekran olduğu gibi
+    gameLogo:  ["assets/last_breath_logo.png"],     // varsa LAST BREATH kartında kullanılır
+    music:     ["assets/music.mp3"],                // varsa sentez müziğin yerine geçer
+    kare01: ["assets/kareler/kare01.jpg"], ekstra01: ["assets/kareler/ekstra01.jpg"], kare02: ["assets/kareler/kare02.jpg"],
+    kare03: ["assets/kareler/kare03.jpg"], kare04: ["assets/kareler/kare04.jpg"], kare05: ["assets/kareler/kare05.jpg"],
+    kare06: ["assets/kareler/kare06.jpg"], kare07: ["assets/kareler/kare07.jpg"], kare08: ["assets/kareler/kare08.jpg"],
+    kare09: ["assets/kareler/kare09.jpg"], kare10: ["assets/kareler/kare10.jpg"], kare11: ["assets/kareler/kare11.jpg"],
+    kare12: ["assets/kareler/kare12.jpg"], kare13: ["assets/kareler/kare13.jpg"],
   },
-  // Sprite'ın görseldeki "ön" yönü: -PI/2 = yukarı, 0 = sağa.
-  spriteFacing: -Math.PI / 2,
-  spriteSize: 46,
-  pixelArt: false,
-  keyArt: {
-    focus: [0.5, 0.5],        // Ken Burns yakınlaşma merkezi (0–1)
-    ethanFocus: [0.5, 0.42],  // 1:30'daki yakın plan için Ethan'ın yüzü (0–1)
-    titleCrop: null,          // Kapaktaki LAST BREATH yazısı: [x, y, w, h] (0–1). Ayrı logo yoksa kullanılır.
-  },
+  // Renk eşitleme: her kare aynı soğuk mavi-gri tona çekilir, yalnızca ateş turuncusu korunur.
+  // exp: pozlama çarpanı, warm: turuncunun ne kadar korunacağı.
+  grade: { kare05: { exp: .72 }, kare12: { exp: .62, warm: .55 }, kare11: { exp: .9 }, kare08: { exp: .95 } },
   music: {
-    startAt: 5,        // parçanın 0. saniyesi fragmanın kaçıncı saniyesinde başlar (zirve 60–85 → 1:05–1:30)
-    cutAt: 90,         // sessizlik için müziğin kesildiği an
-    resumeAt: 101.1,   // darbeden sonra müziğin döndüğü an
-    resumeFrom: 85,    // dönüşte parçanın kaçıncı saniyesinden devam edileceği
+    startAt: 5,        // parçanın 0. saniyesi fragmanın kaçıncı saniyesinde başlar (zirve 60–85 → 1:05–1:27)
+    cutAt: 87,         // ani sessizlik
+    resumeAt: 100.5,   // kapanış darbesiyle müzik döner
+    resumeFrom: 87,
     volume: 0.9,
     duck: 0.4,         // konuşma anlarında müzik seviyesi
   },
 };
 
-/* Replikler — .srt dosyası da bundan üretilir. */
+/* Replikler — .srt dosyası da bundan üretilir. Seslendirme yok, yalnızca altyazı. */
 const DIALOG = [
   { who: "SPİKER", text: "…yetkililer durumun kontrol altında olduğunu açıkladı.", a: 8.9, b: 11.9, kind: "tv" },
   { who: "SPİKER", text: "Vatandaşların evlerinde kalması…", a: 12.0, b: 14.7, kind: "tv" },
-  { who: "ETHAN", text: "Kimse gelmedi.", a: 22.4, b: 24.9 },
-  { who: "ETHAN", text: "Kimse gelmeyecek.", a: 26.0, b: 28.6 },
-  { who: "SARAH", text: "Kıpırdama.", a: 40.4, b: 42.6 },
-  { who: "SARAH", text: "…Sen onlardan değilsin.", a: 43.0, b: 45.4 },
-  { who: "ETHAN", text: "Henüz değil.", a: 45.9, b: 47.9 },
-  { who: "SARAH", text: "Sırt sırta, o zaman.", a: 48.3, b: 50.8 },
-  { who: "DR. E. WARREN · KAYIT", text: "Komisyon sahada test istiyor.", a: 53.2, b: 56.4, kind: "rec" },
-  { who: "DR. E. WARREN · KAYIT", text: "Laboratuvarda değil… sahada.", a: 56.6, b: 59.4, kind: "rec" },
-  { who: "SARAH", text: "Bu bir kaza değildi.", a: 60.2, b: 62.4 },
-  { who: "ETHAN", text: "Hiçbir zaman değildi.", a: 62.8, b: 64.9 },
-  { who: "ETHAN", text: "Son nefesime kadar.", a: 95.4, b: 98.4 },
+  { who: "RADYO", text: "…tahliye noktaları… düştü… tekrar ediyorum…", a: 28.4, b: 31.2, kind: "radio" },
+  { who: "ETHAN", text: "Başta sayıyordum. Günleri… ölüleri.", a: 32.2, b: 35.2 },
+  { who: "ETHAN", text: "Sonra bıraktım.", a: 36.0, b: 37.7 },
+  { who: "SARAH", text: "Neden hâlâ yürüyoruz, Ethan?", a: 39.0, b: 41.6 },
+  { who: "ETHAN", text: "Çünkü durursak… onlar kazanır.", a: 44.0, b: 47.2 },
+  { who: "SARAH", text: "Kaç tane var?", a: 59.1, b: 61.1 },
+  { who: "ETHAN", text: "Yeterince.", a: 62.4, b: 64.0 },
+  { who: "SARAH", text: "Söz ver bana… onlardan biri olmayacağım.", a: 89.6, b: 93.6 },
+  { who: "ETHAN", text: "…Söz veriyorum.", a: 97.3, b: 99.6 },
 ];
-

@@ -47,6 +47,22 @@ const SFX = {
   rocket: at => { tone(at, .35, { f: 95, f2: 38, peak: .9 }); nz(at, .5, { f: 600, peak: .6, send: .3 }); nz(at + .02, .7, { type: "bandpass", f: 900, f2: 3200, q: .8, peak: .45 }); },
   ignite: at => { nz(at, .1, { type: "bandpass", f: 400, f2: 3000, q: 1.2, peak: .3, a: .35 }); SFX.shimmer(at + .1, .8); },
   hitLite: at => { tone(at, 1.2, { f: 45, f2: 25, peak: .7 }); nz(at, .5, { type: "highpass", f: 1500, peak: .35, send: .4 }); },
+  heart: (at, s = 1) => { tone(at, .14, { f: 62, f2: 40, peak: .9 * s }); nz(at, .08, { f: 120, peak: .3 * s }); tone(at + .2, .12, { f: 52, f2: 36, peak: .6 * s }); },
+  rack: at => { nz(at, .07, { type: "bandpass", f: 2600, q: 3, peak: .55 }); nz(at + .06, .16, { type: "bandpass", f: 1300, f2: 2600, q: 2, peak: .35 }); nz(at + .25, .04, { type: "highpass", f: 3000, peak: .6 }); tone(at + .25, .06, { f: 900, peak: .12 }); },
+  kick: at => { tone(at, .25, { f: 95, f2: 42, peak: .6 }); nz(at, .03, { type: "highpass", f: 2000, peak: .06 }); },
+  taiko: at => { tone(at, .5, { f: 78, f2: 45, peak: .75, send: .3 }); nz(at, .3, { f: 300, f2: 120, peak: .4 }); },
+  hat: at => nz(at, .04, { type: "highpass", f: 7000, peak: .08 }),
+  braam: at => {
+    const fl = AC.createBiquadFilter(), g = AC.createGain(), sg = AC.createGain(); fl.type = "lowpass"; fl.frequency.setValueAtTime(250, at); fl.frequency.linearRampToValueAtTime(1300, at + .25); fl.frequency.exponentialRampToValueAtTime(220, at + 1.8);
+    env(g.gain, at, .03, .32, 1.9); sg.gain.value = .5; fl.connect(g).connect(bus); g.connect(sg).connect(rev);
+    [55, 55.4, 82.4, 110].forEach(f => { const o = AC.createOscillator(); o.type = "sawtooth"; o.frequency.value = f; o.connect(fl); o.start(at); o.stop(at + 2.1); });
+    SFX.taiko(at);
+  },
+  growlFar: at => {
+    const o = AC.createOscillator(), l = AC.createOscillator(), lg = AC.createGain(), fl = AC.createBiquadFilter(), g = AC.createGain(), sg = AC.createGain();
+    o.type = "sawtooth"; o.frequency.value = 48; l.frequency.value = 6; lg.gain.value = 9; fl.type = "lowpass"; fl.frequency.value = 260;
+    l.connect(lg).connect(o.frequency); env(g.gain, at, .4, .09, 1.6); sg.gain.value = 1.4; o.connect(fl).connect(g).connect(bus); g.connect(sg).connect(rev); o.start(at); l.start(at); o.stop(at + 2.3); l.stop(at + 2.3);
+  },
   tvOn: at => { nz(at, .05, { type: "highpass", f: 1500, peak: .5 }); tone(at, .4, { f: 15600, peak: .02 }); },
   tvOff: at => { tone(at, .35, { f: 900, f2: 60, peak: .3 }); nz(at, .08, { type: "highpass", f: 2000, peak: .4 }); },
   glitch: at => { for (let i = 0; i < 6; i++) nz(at + i * .09, .05, { type: "bandpass", f: 400 + AR() * 3000, q: 3, peak: .35 }); },
@@ -79,12 +95,11 @@ function interp(keys, t) {
   return keys[keys.length - 1][1];
 }
 function keyframes(pr, keys) { pr.setValueAtTime(interp(keys, MIX.t0), MIX.when); for (const [t, v] of keys) if (t > MIX.t0) pr.linearRampToValueAtTime(v, TT(t)); }
-const DRONE_KEYS = [[0, 0], [1, .22], [6, .38], [8, .16], [20, .12], [65, .16], [89.8, .26], [90, .1], [98.9, 0], [101, 0], [101.05, .22], [118, .18], [120, 0]];
-const RAIN_KEYS = [[0, 0], [20, 0], [20.6, .1], [38, .1], [52, .05], [65, .07], [90, .07], [90.2, .12], [98.95, .12], [99.1, 0]];
-const WIND_KEYS = [[0, 0], [20, 0], [21, .06], [52, .08], [65, .04], [90, .03], [99, 0]];
-const TV_KEYS = [[0, 0], [8, 0], [8.05, .16], [14.7, .16], [14.75, .32], [15.35, .32], [15.45, 0]];
-const HUM_KEYS = [[0, 0], [52, 0], [52.05, .06], [64.9, .06], [65, 0]];
-const SIREN_KEYS = [[0, 0], [29.5, 0], [31, .05], [36, .05], [37.9, 0]];
+const DRONE_KEYS = [[0, 0], [1, .22], [6, .38], [8, .16], [20, .12], [49, .14], [64.9, .3], [65, .2], [86.95, .26], [87, 0], [100.5, 0], [100.55, .24], [108, .16], [110, 0]];
+const RAIN_KEYS = [[0, 0], [20, 0], [20.6, .12], [38, .12], [49, .1], [65, .08], [86.95, .08], [87, 0], [89, 0], [89.8, .035], [100.45, .035], [100.5, 0]];
+const WIND_KEYS = [[0, 0], [20, 0], [21, .06], [49, .06], [65, .04], [86.95, .04], [87, 0]];
+const TV_KEYS = [[0, 0], [8, 0], [8.05, .16], [14.7, .16], [14.75, .32], [15.35, .32], [15.45, 0], [28.2, 0], [28.3, .12], [31.35, .12], [31.4, 0]];
+const PAD_KEYS = [[0, 0], [20, 0], [23, .045], [48, .045], [49, .03], [64.8, .09], [65, .05], [86.95, .05], [87, 0], [90.5, 0], [92.5, .025], [100.45, .025], [100.5, 0]];
 function musicKeys() {
   const M = CONFIG.music, v = M.volume, keys = [[0, 0], [M.startAt, 0], [M.startAt + 3, v]];
   const wins = [];
@@ -95,26 +110,31 @@ function musicKeys() {
 }
 let CUES = [];
 function buildCues() {
-  const c = [[.8, "riser", 2.8], [3.9, "shimmer", 1.6], [8, "tvOn"], [11.9, "cut"], [14.75, "glitch"], [15.35, "tvOff"], [16.2, "softThud"], [20, "whoosh"],
-    ...STEPS.map(s => [s, "splash"]), [26.6, "breath", 1.2], [28.1, "breath", 1.2],
-    [29.5, "cut"], [30.2, "growl", true], [31.4, "growl"], [32.5, "drag"], [33.3, "drag"], [33.9, "growl", true], [35, "cut"], [36.2, "growl", true],
-    [38, "cut"], [38.05, "smg", 3], [38.2, "growl"], [38.75, "thud"], [40.2, "radioClick"], [42.6, "cut"], [45.4, "cut"],
-    [48.2, "cut"], [49.4, "growl"], [50.2, "shotgun"], [50.9, "shotgun"], [51.5, "shotgun"], [51.2, "growl", true],
-    [52, "softThud"], [56.6, "radioClick"], [59.6, "cut"], [61.2, "whoosh"], [63.9, "whoosh"], [64.2, "thud"], [64.25, "growl", true],
-    [98.6, "inhale"], [101, "hit"], [102.6, "whoosh"], [115.1, "softThud"]];
-  for (const d of DIALOG) if (d.kind) { c.push([d.a, "murmur", [d.b - d.a, d.kind]]); if (d.kind === "rec") c.push([d.a - .08, "radioClick"], [d.b, "radioClick"]); }
-  c.push([90.9, "breath", 1.8], [93.2, "breath", 2], [95.9, "breath", 1.6]);
-  const MAP = {
-    swingWide: [[.1, "slash"], [.5, "thud"]], swingClose: [[0, "slash"], [.06, "growl"]], shotgunTop: [[.03, "shotgun"]], shellInsert: [[0, "pump"], [.35, "tink"], [.55, "tink"]],
-    barrelWide: [[.03, "boom"], [.15, "boom"], [.27, "boom"]], barrelClose: [[.04, "boom"], [.04, "hitLite"]], tankStomp: [[.1, "thud"], [.1, "splash"]], tankRoar: [[0, "growl", true], [.04, "thunder"]],
-    runnersSide: [[0, "horde", .7]], runnersTop: [[0, "horde", .6]], shamanSide: [[0, "ritual", .8]], shamanTop: [[0, "ritual", .6]], sarahProfile: [[0, "smg", 7]],
-    casings: [[.2, "tink"], [.3, "tink"], [.42, "tink"], [.5, "tink"]], armoredSparks: [[.04, "ping"], [.12, "ping"], [.2, "ping"], [.28, "ping"], [.04, "smg", 4]], smgTop: [[0, "smg", 6]],
-    lightningHill: [[.05, "thunder"]], dash: [[.05, "whoosh"]], katana: [[.02, "ignite"]], barricade: [[.12, "wood"], [.05, "growl"]], zombieEyes: [[.08, "growl", true]],
-    rocketSide: [[.06, "rocket"]], rocketImpact: [[.03, "boom"], [.03, "hitLite"]], chainTop: [[.02, "boom"], [.16, "boom"]], backToBack: [[.05, "shotgun"], [.14, "smg", 3], [.38, "shotgun"], [.45, "smg", 2]],
-    endless: [[0, "growl", true], [.2, "horde", .8]], finalStrike: [[0, "thunder"]],
-  };
-  for (const s of MONTAGE) { if (s.card) c.push([s.a, "cut"]); else for (const [o, n, arg] of MAP[s.type]) c.push([s.a + o, n, arg]); }
-  CUES = c.sort((a, b) => a[0] - b[0]);
+  // giriş (0:00–0:20) — değiştirilmedi
+  const c = [[.8, "riser", 2.8], [3.9, "shimmer", 1.6], [8, "tvOn"], [11.9, "cut"], [14.75, "glitch"], [15.35, "tvOff"], [16.2, "softThud"]];
+  for (const d of DIALOG) if (d.kind) c.push([d.a, "murmur", [d.b - d.a, d.kind]]);
+  // 1–2) sessiz dünya, Sarah: ateş çıtırtısı, radyo
+  for (let i = 0; i < 40; i++) c.push([20.3 + mulberry(40 + i)() * 5, "crackle"]);
+  for (let i = 0; i < 70; i++) c.push([38.2 + mulberry(140 + i)() * 10.6, "crackle"]);
+  c.push([28.3, "radioClick"], [31.4, "radioClick"]);
+  // 3) yükseliş: hızlanan kalp atışı, kartlar, sürgü
+  for (let x = 49, k = 0; x < 64.8; k++) { const q = (x - 49) / 15.8; c.push([x, "heart", .55 + .45 * q]); x += lerp(1.15, .42, q); }
+  c.push([55.2, "hitLite"], [57.0, "hitLite"], [61.8, "rack"]);
+  // 4) patlama: kesmeler vuruş ızgarasında; müzik dosyası yoksa ritim sentezlenir
+  const starts = new Set(); let prev = "";
+  for (const s of BURST) { if (s.k !== prev) starts.add(s.a); prev = s.k; }
+  if (!MUSIC_AB) {
+    for (let n = 0; n < 44; n++) { const x = BURST_T0 + n * BEAT; c.push([x, "kick"]); if (n >= 18) c.push([x + BEAT / 2, "hat"]); }
+    for (const s of BURST) c.push([s.a, starts.has(s.a) ? "braam" : "taiko"]);
+    c.push([CLIMAX - 1.5, "riser", 1.45]);
+  }
+  c.push([65, "shotgun"], [67, "shotgun"], [69.5, "wood"], [70.4, "growl"], [71.5, "wood"], [74.2, "slash"], [75, "growl", true], [78, "horde", 1.2], [80, "growl"],
+    [82, "growl", true], [83, "thud"], [84, "thud"], [CLIMAX, "hit"]);
+  // 5) ani sessizlik: yalnızca nefes
+  c.push([87.4, "breath", 1.4], [88.9, "breath", 1.6]);
+  // 6) kapanış
+  c.push([100.5, "hit"], [104.3, "softThud"], [108, "growlFar"]);
+  CUES = c.sort((x, y) => x[0] - y[0]);
 }
 function makeNoise(ac) { const b = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), d = b.getChannelData(0), R = mulberry(77); for (let i = 0; i < d.length; i++) d[i] = R() * 2 - 1; return b; }
 function makeIR(ac) { const len = ac.sampleRate * 3, b = ac.createBuffer(2, len, ac.sampleRate), R = mulberry(5); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (R() * 2 - 1) * Math.pow(1 - i / len, 3); } return b; }
@@ -136,8 +156,7 @@ function buildMix(ac, out, t0, when, musicBuf) {
   bed(g => { const hp = filt("highpass", 900), lp = filt("lowpass", 7000); hp.connect(lp).connect(g); loop(noiseSrc(), hp); }, RAIN_KEYS);
   bed(g => { const lp = filt("lowpass", 400, 2), l = ac.createOscillator(), lg = ac.createGain(); l.frequency.value = .15; lg.gain.value = 180; l.connect(lg).connect(lp.frequency); l.start(when); l.stop(TT(CONFIG.duration)); lp.connect(g); loop(noiseSrc(), lp); }, WIND_KEYS);
   bed(g => { const bp = filt("bandpass", 3200, .5); bp.connect(g); loop(noiseSrc(), bp); }, TV_KEYS);
-  bed(g => { const lp = filt("lowpass", 180); lp.connect(g); [50, 100.4].forEach(f => { const o = ac.createOscillator(); o.type = "sawtooth"; o.frequency.value = f; loop(o, lp); }); }, HUM_KEYS);
-  bed(g => { const o = ac.createOscillator(), l = ac.createOscillator(), lg = ac.createGain(), lp = filt("lowpass", 1400); o.type = "triangle"; o.frequency.value = 720; l.frequency.value = .33; lg.gain.value = 170; l.connect(lg).connect(o.frequency); l.start(when); l.stop(TT(CONFIG.duration)); lp.connect(g); loop(o, lp); }, SIREN_KEYS, 2.5);
+  bed(g => { const lp = filt("lowpass", 1400); lp.connect(g); [110, 130.81, 164.81, 220, 110.4].forEach(f => { const o = ac.createOscillator(); o.frequency.value = f; loop(o, lp); }); }, PAD_KEYS, .6);
   for (const [t, name, arg] of CUES) if (t >= t0 - .01) Array.isArray(arg) ? SFX[name](Math.max(when, TT(t)), ...arg) : SFX[name](Math.max(when, TT(t)), arg);
   if (musicBuf) {
     const M = CONFIG.music, mg = ac.createGain(); mg.connect(master); keyframes(mg.gain, musicKeys());
