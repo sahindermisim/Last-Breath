@@ -4,11 +4,42 @@ Brifing v2'ye göre hazırlanmış 2:00'lik hikâye fragmanı: 1920×1080, 30 fp
 
 | Dosya | Ne işe yarar |
 |---|---|
-| `index.html` | Fragmanın kendisi. Her kare yalnızca zamana bağlı, canvas'ta çiziliyor. Tarayıcıda açınca önizleme oynatıcısı var. |
-| `render.mjs` | Kareleri tek tek alıp ffmpeg ile MP4'e çeviriyor, sesi ayrıca mix'liyor, `.srt` yazıyor. |
+| `index.html` | Önizleme oynatıcısı; aşağıdaki modülleri yükler. |
+| `js/config.js` | Ayarlar, dosya yolları, replikler ve zamanlamaları. |
+| `js/side.js` | Yan görünüm sahne kiti: paralaks katmanlar, ışık, yağmur/sis, eklemli siluet karakter animasyonu. |
+| `js/scenes.js` | Zaman çizelgesi: tüm sahneler ve 26 planlık montaj. |
+| `js/topdown.js` | Tepeden (oyun içi) planlar; sprite'lar burada kullanılır. |
+| `js/audio.js` | Ses tasarımı ve mix. |
+| `render.mjs` | Kareleri tek tek alıp ffmpeg ile MP4'e çevirir, sesi mix'ler, `.srt` yazar. |
 | `trailer.srt` | Tüm replikler ve zamanlamaları. |
-| `assets/` | Senin dosyaların (aşağıya bak). |
-| `fonts/` | Bebas Neue ve Oswald (Google Fonts, OFL lisanslı; Türkçe karakterler dahil). |
+
+## Çekim listesi
+
+| Zaman | Plan |
+|---|---|
+| 0:00 | Ashbound logosu bulanıktan netleşir, metalik ışık, "sunar" |
+| 0:08 | Oda: koltukta oturan adam, TV'nin titreyen mavi ışığı, camda yağmur (yavaş dolly) |
+| 0:11.9 | TV yakın plan: "SON DAKİKA", parazit, sinyal kopar, ekran kapanır → "İKİ HAFTA SONRA" |
+| 0:20 | Vinç inişi: aydan yıkık şehir siluetine, yanan varillere ve yalnız yürüyen Ethan'a (kapak görseli varsa onun üzerinde Ken Burns) |
+| 0:24.6 | Zemin seviyesi: botlar su birikintisine basar, halkalar ve damlalar |
+| 0:26 | Orta plan: Ethan durur, başını kaldırır, nefesi buhar olur |
+| 0:29.5 | Geniş plan: ay ışığında sisli sırtta ilerleyen zombi siluetleri, uzakta siren |
+| 0:32.5 | Alçak açı: sürüklenen ayaklar |
+| 0:35 | Tepeden (oyun içi): kalabalık |
+| 0:38 | Ara sokak: koşucu saldırır, karanlıktan gelen tarama onu düşürür |
+| 0:40.2 | Sarah fener ışığıyla karanlıktan çıkar; Ethan gözlerini siper eder |
+| 0:42.6 | Omuz üstü: Sarah ön planda (bulanık), Ethan fenerin ışığında |
+| 0:45.4 | Profil iki kişilik plan, arada varil ateşi: Sarah silahını indirir |
+| 0:48.2 | Tepeden (oyun içi): sırt sırta, halka daralır |
+| 0:52 | Kartal Üssü: tel örgü, hangarlar, kulelerden süpüren projektörler |
+| 0:56.6 | Detay: dönen makaralar, kayıt ışığı, sese göre oynayan VU iğnesi |
+| 0:59.6 | Çitin dibinde: projektör üstlerinden geçerken eğilirler |
+| 1:03.9 | Projektör hangarın arkasından yükselen Denek 7'yi bulur, gözleri yanar |
+| 1:05 | Montaj: pala (geniş + yakın), pompalı (oyun içi + mermi detayı), zincirleme variller, varil yakın plan, tank adımı, tank kükremesi, koşucular (yan + oyun içi), şaman (yan + oyun içi), Sarah profil, kovanlar, zırhlı + kıvılcımlar, Sarah (oyun içi), şimşekte sırt, atılma, KANLI KATANA, barikat, zombi gözleri, roketatar, roket isabeti, zincirleme patlama (oyun içi), sırt sırta, sonsuz sürü; araya 5 kart |
+| 1:29.4 | Şimşek: sürünün önünde Ethan |
+| 1:30 | Sessizlik: Ethan'a aşırı yakın plan, nefes, "Son nefesime kadar." |
+| 1:41 | Beyaz flaş + darbe → LAST BREATH |
+| 1:55 | Ashbound logosu + "Şimdi tarayıcında oyna" |
 
 ## Dosyaları koyma
 
@@ -47,9 +78,10 @@ Playwright'ın Chromium'u gerekli. 4 çekirdekli bir makinede 30 fps tam render 
 
 ## Nasıl üretildi
 
-- **Görüntü:** Her sahne `index.html` içinde 2D canvas'a çiziliyor: kamera hareketi, ışık ve gölge katmanı,
-  yağmur, sis ve kıvılcım parçacıkları, film greni, vinyet, letterbox. Görseller sabit olduğu için hareketi bu katmanlar veriyor
-  (Ken Burns, sarsıntı, projektör süpürmesi, flaşlar).
+- **Görüntü:** Sinematik planlar yan görünümde, derinlik katmanlı paralaks sahneler olarak çiziliyor.
+  Karakterler eklemli iskeletlerle canlandırılıyor (yürüme, koşma, sallanma, savurma, nişan, geri tepme, düşme, çömelme) ve kenar ışıklı siluetler olarak görünüyor.
+  Işık tarafında ateş ve ay ışığı, ıslak zeminde yansımalar, hacimli projektör ve fener ışığı, anamorfik parlama, 3 katman yağmur, sis, film greni ve 2.39:1 letterbox var.
+  Tepeden bakış planları oyun içi görüntü hissi için kullanılıyor; sprite'lar orada yer alıyor.
 - **Ashbound logosu:** Senin dosyan. Yeniden çizilmedi. Siyah zemin saydamlığa çevrildi, beyaz renk ve oranlar aynen korundu.
   Açılışta bulanıktan netleşiyor, üzerinden metalik bir ışık bandı geçiyor. Kapanışta küçük olarak tekrar geliyor.
 - **Ses:** Web Audio `OfflineAudioContext` ile tek geçişte mix'leniyor: uğultu, yağmur, rüzgâr, uzak siren, jeneratör uğultusu,
@@ -64,7 +96,5 @@ Playwright'ın Chromium'u gerekli. 4 çekirdekli bir makinede 30 fps tam render 
 
 ## Bilinen eksikler
 
-- Şaman ve Denek 7 için sprite verilmedi. Şaman küçük bir yedek çizim; Denek 7 yalnızca gölge ve gözlerden ibaret.
+- Sinematik (yan görünüm) planlardaki karakterler siluet animasyonu; sprite'lar tepeden bakış planlarında kullanılıyor.
 - Oyun içi ekran kaydı verilmedi, hiç kullanılmadı.
-- Tepeden bakış zemin dokuları (asfalt, üs zemini, tel örgü) oyunun sahnelerini temsil eden basit dokular;
-  ekran kayıtları gelirse bunların yerine konabilir.

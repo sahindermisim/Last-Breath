@@ -39,7 +39,7 @@ async function detectBeats() {
   const src = ["assets/music.mp3"].map(f => path.join(ROOT, f)).find(fs.existsSync);
   const bj = path.join(ROOT, "beats.json");
   if (!src) { if (fs.existsSync(bj)) fs.unlinkSync(bj); console.log("müzik yok → montaj sabit 0.62 sn aralıkla kesiliyor"); return; }
-  const cfg = fs.readFileSync(path.join(ROOT, "index.html"), "utf8").match(/startAt:\s*([\d.]+)/);
+  const cfg = fs.readFileSync(path.join(ROOT, "js", "config.js"), "utf8").match(/startAt:\s*([\d.]+)/);
   const startAt = cfg ? +cfg[1] : 5, SR = 22050, HOP = 512;
   const raw = await run(FF, ["-v", "error", "-i", src, "-ac", "1", "-ar", String(SR), "-f", "f32le", "-"]);
   const x = new Float32Array(raw.buffer, raw.byteOffset, raw.byteLength / 4);
