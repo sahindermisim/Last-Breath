@@ -61,7 +61,7 @@ function keyLogo(img) {
   g.putImageData(d, 0, 0);
   return c;
 }
-const ASSET_LABEL = { logo: "Ashbound logosu (giriş)", logoFinal: "Ashbound logosu (kapanış)", gameLogo: "LAST BREATH logosu", music: "Müzik" };
+const ASSET_LABEL = { logo: "Ashbound logosu (giriş)", logoFinal: "Ashbound logosu (kapanış)", gameLogo: "LAST BREATH logosu", music: "Müzik", rating: "Yaş sınırı kartı (16+)" };
 
 /* Yer tutucu etiketi: eksik bir dosyanın yerine yedek çizim kullanıldığında karede görünür. */
 const STAND = new Set();

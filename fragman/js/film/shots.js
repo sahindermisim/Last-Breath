@@ -131,7 +131,7 @@
     // sürü: uzaktan sise karışarak kameraya yürür
     const list = HORDE.filter(z => t > z.t0).map(z => ({ z, D: z.d0 - (t - z.t0) * z.v })).filter(o => o.D > 1.2).sort((a, b) => b.D - a.D);
     for (const { z, D } of list) { const [x, y, s] = F.pr(z.x, 0, D), fogA = clamp(1.3 - (D - 3) / 16), emerge = p(t, z.t0, z.t0 + 1.5), back = clamp(1 - Math.abs(x - cx) / 900) * clamp((D - 3) / 10);
-      F.scr(); F.crowdSprite(ctx, F.CROWD_FRONT, z.v2, (t + z.ph) * z.sp, x, y, s, z.v2 % 2 ? 1 : -1, fogA * emerge, back * .9 * emerge); }
+      F.scr(); F.crowdSprite(ctx, F.CROWD_FRONT, z.v2, (t + z.ph) * z.sp, x, y, s, z.v2 % 2 ? 1 : -1, fogA * emerge, back * .9 * emerge, .42 * clamp(1.4 - D / 12)); }
     // ön plan: yıkık araba, eğik direk, ıslak zeminde yangın yansıması
     S(); ctx.globalCompositeOperation = "lighter"; const rg = ctx.createLinearGradient(0, C.hy, 0, H); rg.addColorStop(0, "rgba(255,120,50,.22)"); rg.addColorStop(.5, "rgba(255,120,50,.06)"); rg.addColorStop(1, "rgba(255,120,50,0)"); ctx.fillStyle = rg; ctx.filter = "blur(18px)"; ctx.fillRect(cx - 70, C.hy, 140, H - C.hy); ctx.filter = "none"; ctx.globalCompositeOperation = "source-over";
     F.L(1.9); F.pole(ctx, 560, 900, -.12, 16); F.cable(ctx, [456, -880], [1400, -700], 80, 3);
@@ -139,8 +139,8 @@
     F.ash(t, 50, .5); F.rain(t, .9, .12, [[cx, cy, 900, .8]]);
   }
   function sCards(t) { S(); ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H);
-    for (const [s, a, b] of [["DÜNYA SUSTU.", 69.7, 71.2], ["ÖLÜLER SUSMADI.", 71.4, 72.9]]) { const k = p(t, a, a + .9), o = Math.min(eOut(k), 1 - p(t, b - .25, b)); if (o <= 0) continue; const sc = lerp(1.05, 1, eOut(k));
-      S(); ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(sc, sc); ctx.font = `400 150px ${FD}`; ctx.textAlign = "center"; if ("letterSpacing" in ctx) ctx.letterSpacing = "22px"; ctx.fillStyle = `rgba(233,226,210,${o})`; ctx.fillText(s, 11, 52); ctx.restore(); } }
+    for (const [s, a, b] of [["THE WORLD WENT SILENT.", 69.7, 71.2], ["THE DEAD DID NOT.", 71.4, 72.9]]) { const k = p(t, a, a + .9), o = Math.min(eOut(k), 1 - p(t, b - .25, b)); if (o <= 0) continue; const sc = lerp(1.05, 1, eOut(k));
+      S(); ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(sc, sc); ctx.font = `400 150px ${FD}`; ctx.textAlign = "center"; if ("letterSpacing" in ctx) ctx.letterSpacing = "22px"; const fitK = Math.min(1, (W - 260) / ctx.measureText(s).width); ctx.scale(fitK, fitK); ctx.fillStyle = `rgba(233,226,210,${o})`; ctx.fillText(s, 11, 52); ctx.restore(); } }
   const FLASH3 = 76.3;
   function sDark(t) { // 72.9–78.5: fısıltı, sürgü, tek namlu alevi
     F.setCam({ x: 0, y: -150, f: 2.6, hy: 560 }); F.hand(t, .4);
@@ -149,7 +149,7 @@
     const far = .06 + .03 * Math.sin(t * 2);
     F.glowS(W * .8, H * .45, 700, FIRE, far);
     if (f > 0) { F.glowS(1250, 480, 700 * f, "255,190,120", .35 * f); }
-    F.L(1); const fe = F.figure(ctx, -40, 0, 1, 1, E, F.P.aim(t > FLASH3 ? Math.max(0, 1 - (t - FLASH3) / .25) : 0), { t, weapon: "pistol", col: "#010102", rims: [{ c: `rgba(255,${170 + 60 * f | 0},100,${Math.min(1, .15 + f)})`, dx: 1.5 }], halo: { c: "#ffb070", a: .6 * f, blur: 10 } });
+    F.L(1); const fe = F.figure(ctx, -40, 0, 1, 1, E, F.P.aim(t > FLASH3 ? Math.max(0, 1 - (t - FLASH3) / .25) : 0), { t, weapon: "pistol", amb: [8 + 150 * f, 9 + 120 * f, 12 + 90 * f], top: .1 * f, rims: [{ c: `rgba(255,${170 + 60 * f | 0},100,${Math.min(1, .15 + f)})`, dx: 1.5 }], halo: { c: "#ffb070", a: .6 * f, blur: 10 } });
     if (fe.tip && f > .05) { const [mx, my] = F.pr(fe.tip[0], fe.tip[1], 1); F.glowS(mx, my, 260 * f, "255,235,200", f); flare(mx, my, .8 * f, "255,200,150"); }
     F.rain(t, .3, .1, f > 0 ? [[1300, 470, 1200, f]] : []);
   }
@@ -164,7 +164,7 @@
     if (f > 0) { F.glowS(W * .5, 560, 1300, "255,190,130", .75 * f); F.glowS(W * .5, 600, 500, "255,230,200", .5 * f); F.fogLayer(t, 600, .6 * f, 30, 2, .02); }
     const D0 = [9, 6, 3.8, 2.2][Math.max(0, i)], R = mulberry(77 + i);
     const zs = []; for (let k = 0; k < 70; k++) zs.push({ x: (R() - .5) * 1600, D: D0 + R() * 9, v: k % 8, ph: R() * 6 });
-    zs.sort((a, b) => b.D - a.D).forEach(z => { const [x, y, s] = F.pr(z.x, 0, z.D); F.scr(); F.crowdSprite(ctx, F.CROWD_FRONT, z.v, t * 2.4 + z.ph, x, y, s, z.v % 2 ? 1 : -1, clamp(1.4 - (z.D - D0) / 9), f * .8); });
+    zs.sort((a, b) => b.D - a.D).forEach(z => { const [x, y, s] = F.pr(z.x, 0, z.D); F.scr(); F.crowdSprite(ctx, F.CROWD_FRONT, z.v, t * 2.4 + z.ph, x, y, s, z.v % 2 ? 1 : -1, clamp(1.4 - (z.D - D0) / 9), f * .8, clamp(f * 1.2) * clamp(1.2 - (z.D - D0) / 10)); });
     blk(clamp(1 - f * 1.4));
     if (f > .5) { F.glowS(160, 900, 500 * f, "255,230,190", f); }
     F.rain(t, .7, .12, [[W / 2, 500, 1600, f]]);
@@ -215,7 +215,7 @@
       F.ground("#120b08", "#020202"); F.reflect(C.hy + C.shy - C.y * F.sc(1e4), 380, .4);
       F.L(1.4); for (let i = -2; i < 12; i++) F.fire(ctx, i * 520 + 120, 0, 90, t, i + 40, .9);
       F.L(1.2); const rx = lt * 380 + 80;
-      for (let i = 0; i < 16; i++) { const zx = rx - 700 - i * 60 - (i % 3) * 40, [x, y, s] = F.pr(zx, 0, 1.2 + (i % 4) * .6); F.scr(); F.crowdSprite(ctx, F.CROWD_RUN, i, t * 13 + i, x, y, s, 1, 1, .6); }
+      for (let i = 0; i < 16; i++) { const zx = rx - 700 - i * 60 - (i % 3) * 40, [x, y, s] = F.pr(zx, 0, 1.2 + (i % 4) * .6); F.scr(); F.crowdSprite(ctx, F.CROWD_RUN, i, t * 13 + i, x, y, s, 1, 1, .6, .7); }
       F.L(1.2); F.figure(ctx, rx, 0, 1, 1, E, F.P.run(t * 12.5), { t, weapon: "machete", rims: [{ c: "rgba(255,140,60,.95)", dx: -3 }], halo: { c: "#ff7a2a", a: .35 } });
       F.figure(ctx, rx + 110, 0, 1, 1, SA, F.P.run(t * 13 + 2), { t, weapon: "smg", rims: [{ c: "rgba(255,140,60,.95)", dx: -3 }], halo: { c: "#ff7a2a", a: .35 }, hairLag: -6 });
       F.embers(t, 120, 1); F.rain(t, .8, .25, [[W * .3, 500, 800, .7]]);
@@ -226,7 +226,7 @@
       const [cx, cy] = F.pr(600, -600, 12); F.glowS(cx, cy, 1100, FIRE, .6); F.rays(cx, cy, 1300, .1, t * .02);
       F.ground("#120b08", "#020202"); F.reflect(C.hy + C.shy - C.y * F.sc(1e4), 320, .35);
       const zs = []; for (let i = 0; i < 90; i++) { const st = beat(32) + (i / 90) * 2.6, q = t - st; if (q < 0) continue; zs.push({ i, D: 5.5 - q * 1.9 - (i % 5) * .35, x: 650 - q * 560 + ((i * 37) % 600) - 300 }); }
-      zs.filter(z => z.D > .9).sort((a, b) => b.D - a.D).forEach(z => { const [x, y, s] = F.pr(z.x, 0, z.D); F.scr(); F.crowdSprite(ctx, F.CROWD_RUN, z.i, t * 13 + z.i, x, y, s, -1, clamp((14 - z.D) / 6), .8); });
+      zs.filter(z => z.D > .9).sort((a, b) => b.D - a.D).forEach(z => { const [x, y, s] = F.pr(z.x, 0, z.D); F.scr(); F.crowdSprite(ctx, F.CROWD_RUN, z.i, t * 13 + z.i, x, y, s, -1, clamp((14 - z.D) / 6), .8, .45 * clamp(1.3 - z.D / 6)); });
       F.fogLayer(t, 600, .3, 40, 1.6, .02); F.embers(t, 140, 1); F.rain(t, .8, .2, [[cx, cy, 900, .8]]);
     }
   }
@@ -255,13 +255,13 @@
     F.setCam({ x: 0, y: -168, f: 7.4 + .35 * p(t, 106, 118), hy: 560 }); F.hand(t, .35);
     F.glowS(W / 2, H * .82, 700, FIRE, .5 * fl); F.glowS(W / 2, H * .9, 260, "255,190,120", .45 * fl);
     const br = Math.sin(t * 1.7);
-    F.L(1); F.figure(ctx, -44, 8, 1, 1, E, F.P.face(t, br), { t: t * .4, rims: [{ c: `rgba(255,135,60,${fl})`, dx: 1.1, dy: -.3 }], halo: { c: "#ff7a2a", a: .25 * fl, blur: 18 } });
-    F.figure(ctx, 44, 2, 1, -1, SA, F.P.face(t + 1, Math.sin(t * 2.3)), { t: t * .4, rims: [{ c: `rgba(255,135,60,${fl})`, dx: -1.1, dy: -.3 }], halo: { c: "#ff7a2a", a: .25 * fl, blur: 18 } });
+    F.L(1); F.figure(ctx, -44, 8, 1, 1, E, F.P.face(t, br), { t: t * .4, amb: [26, 28, 36], rims: [{ c: `rgba(255,135,60,${fl})`, dx: 1.1, dy: -.3 }], halo: { c: "#ff7a2a", a: .25 * fl, blur: 18 } });
+    F.figure(ctx, 44, 2, 1, -1, SA, F.P.face(t + 1, Math.sin(t * 2.3)), { t: t * .4, amb: [26, 28, 36], rims: [{ c: `rgba(255,135,60,${fl})`, dx: -1.1, dy: -.3 }], halo: { c: "#ff7a2a", a: .25 * fl, blur: 18 } });
     F.embers(t, 26 * die, .8 * die, W / 2 - 200, W / 2 + 200, H + 40); F.rain(t, .3 * vis, .08, [[W / 2, H * .82, 500, fl]]);
     blk(1 - vis);
   }
 
-  /* ======================= 6) KAPANIŞ 118.5–130.5 (tam ekran) ======================= */
+  /* ======================= 6) KAPANIŞ 118.5–133.5 (tam ekran) ======================= */
   function sClose(t) {
     S(); ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H);
     if (t < 123.5) {
@@ -271,14 +271,17 @@
       const sc = Math.min(1500 / GAME_TITLE.width, 360 / GAME_TITLE.height) * s * lerp(1, 1.04, k), tw = GAME_TITLE.width * sc, th = GAME_TITLE.height * sc, cy = H / 2 - 40;
       S(); ctx.drawImage(GAME_TITLE, W / 2 - tw / 2 + C.shx, cy - th / 2 + C.shy, tw, th);
       const lk = eOut(p(t, 119.6, 120.4)); ctx.fillStyle = "#e0342b"; ctx.fillRect(W / 2 - 420 * lk, cy + 160, 840 * lk, 2);
-      text("SON NEFESİNE KADAR.", W / 2 + 6, cy + 222, { size: 30, sp: 12, weight: 300, alpha: p(t, 120.2, 120.9), color: "#e9e2d2", shadow: false });
+      text("UNTIL YOUR LAST BREATH.", W / 2 + 6, cy + 222, { size: 30, sp: 12, weight: 300, alpha: p(t, 120.2, 120.9), color: "#e9e2d2", shadow: false });
       wht(1 - eOut(p(t, 118.5, 119.1)));
     } else if (t < 126.5) {
       const L2 = IMG.logoFinal; if (L2) { const w = 980, h = w * L2.height / L2.width; S(); ctx.drawImage(L2, (W - w) / 2, (H - h) / 2, w, h); }
-    } else {
-      const a = 1 - p(t, 129.6, 130.5);
-      text("YAKINDA", W / 2 + 12, H / 2 + 30, { font: FD, size: 150, sp: 24, alpha: a, color: "#e9e2d2", shadow: false });
-      text("Sinematik fragman. Oyun içi görüntü değildir.", W / 2, H / 2 + 110, { size: 22, sp: 3, weight: 300, alpha: a * .7, color: "#e9e2d2", shadow: false });
+    } else if (t < 129.7) {
+      const a = 1 - p(t, 129.3, 129.7);
+      text("COMING SOON", W / 2 + 12, H / 2 + 30, { font: FD, size: 150, sp: 24, alpha: a, color: "#e9e2d2", shadow: false });
+      text("Cinematic trailer. Not actual gameplay footage.", W / 2, H / 2 + 110, { size: 22, sp: 3, weight: 300, alpha: a * .7, color: "#e9e2d2", shadow: false });
+    } else { // yaş sınırı kartı (verilen görsel, olduğu gibi)
+      const a = Math.min(eOut(p(t, 129.7, 130.1)), 1 - p(t, 132.6, 133.5)), R = IMG.rating;
+      if (R) { const h = 620, w = h * R.width / R.height; S(); ctx.globalAlpha = a; ctx.filter = "contrast(1.25)"; ctx.drawImage(R, (W - w) / 2, (H - h) / 2, w, h); ctx.filter = "none"; ctx.globalAlpha = 1; } // JPEG siyahı saf siyaha çekilir
     }
   }
 
@@ -289,7 +292,7 @@
     [41.5, 46, sCampWide, "Ateş başı"], [46, 49, sCampSarah, "Sarah"], [49, 52, sCampFire, "Ateş"], [52, 56.5, sCampEthan, "Ethan"],
     [56.5, 69.5, sStreet, "Yükseliş · sürü"], [69.5, 72.9, sCards, "Yazılar"], [72.9, 78.5, sDark, "Karanlık"],
     [78.5, 82.5, sMuzzle, "Patlama · flaşlar"], [82.5, 87.5, sSwing, "Pala"], [87.5, 91.5, sWindow, "Pencere"], [91.5, 97.5, sRun, "Koşuş"], [97.5, 103.5, sTank, "Tank"],
-    [103.5, 118.5, sFaces, "Ani sessizlik"], [118.5, 130.51, sClose, "Kapanış"],
+    [103.5, 118.5, sFaces, "Ani sessizlik"], [118.5, 133.51, sClose, "Kapanış"],
   ];
   F.render = t => {
     const sc = F.SCENES.find(s => t >= s[0] && t < s[1]) || F.SCENES[F.SCENES.length - 1];

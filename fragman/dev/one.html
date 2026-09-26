@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#000}</style></head><body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="../js/config.js"></script><script src="../js/core.js"></script><script src="../js/side.js"></script><script src="../js/film/rig.js"></script>
+<script>
+const q = new URLSearchParams(location.search); const g = ctx; g.fillStyle="#556070"; g.fillRect(0,0,W,H);
+const LL = JSON.parse(q.get("L")||'{"i":0,"top":0}');
+F.figure(g, 500, 1000, 4, 1, F.BUILD.ethan, F.P.stand(0), {t:0, weapon:"machete", light: LL});
+F.figure(g, 1300, 1000, 4, 1, F.BUILD.ethan, F.P.stand(0), {t:0, weapon:"machete", sil:true});
+window.done=true;
+</script></body></html>

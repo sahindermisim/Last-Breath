@@ -6,7 +6,7 @@ function sLogo(t) {
   if (a <= 0) return;
   drawLogo(ctx, cx, cy, w, a, blur);
   const k = p(t, 3.9, 5.4); if (k > 0 && k < 1) logoSweep(eIO(k), cx, cy, w, a);
-  text("sunar", W / 2, cy + 225, { size: 30, sp: 16, weight: 300, alpha: win(t, 5.4, 7.7, .6), color: C.bone, shadow: false });
+  text("presents", W / 2, cy + 225, { size: 30, sp: 16, weight: 300, alpha: win(t, 5.4, 7.7, .6), color: C.bone, shadow: false });
 }
 
 // 0:11.9–0:20 · TV yakın plan: parazit, kapanış → "İKİ HAFTA SONRA"
@@ -32,7 +32,7 @@ function sTV(t) {
     ctx.fillStyle = "#b3161c"; ctx.fillRect(cx - sw / 2 + 60 + jit, cy + sh / 2 - 150, 330, 62);
     ctx.fillStyle = "rgba(10,12,18,.85)"; ctx.fillRect(cx - sw / 2 + 390 + jit, cy + sh / 2 - 150, sw - 450, 62);
     ctx.font = `600 38px ${FB}`; ctx.fillStyle = "#f2f2f2"; ctx.textAlign = "left"; if ("letterSpacing" in ctx) ctx.letterSpacing = "4px";
-    ctx.fillText("SON DAKİKA", cx - sw / 2 + 84 + jit, cy + sh / 2 - 105);
+    ctx.fillText("BREAKING NEWS", cx - sw / 2 + 84 + jit, cy + sh / 2 - 105);
     // parazit
     ctx.globalAlpha = glitch ? .75 : .32; ctx.globalCompositeOperation = "screen";
     ctx.drawImage(GRAIN[Math.floor(t * 30) % GRAIN.length], cx - sw / 2, cy - sh / 2, sw, sh);
@@ -48,7 +48,7 @@ function sTV(t) {
     if (on < 1) screenFill(`rgba(0,0,0,${1 - on})`);
   }
   const k = win(t, 16.2, 19.5, .5);
-  text("İKİ HAFTA SONRA", W / 2, H / 2 + 34, { font: FD, size: 96, sp: 18, alpha: k, color: C.bone, shadow: false });
+  text("TWO WEEKS LATER", W / 2, H / 2 + 34, { font: FD, size: 96, sp: 18, alpha: k, color: C.bone, shadow: false });
 }
 function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 
