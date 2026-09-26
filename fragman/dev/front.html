@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#000">
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="../js/config.js"></script><script src="../js/core.js"></script><script src="../js/side.js"></script><script src="../js/film/rig.js"></script>
+<script>
+const q=new URLSearchParams(location.search), t=+(q.get("t")||0);
+const gr=ctx.createLinearGradient(0,0,0,H); gr.addColorStop(0,"#5a6676"); gr.addColorStop(1,"#9aa4b0"); ctx.fillStyle=gr; ctx.fillRect(0,0,W,H);
+F.figure(ctx, 260, 1000, 4.2, 1, F.BUILD.ethan, F.front({arms:[{out:.08,fwd:0,bend:.2},{out:.1,fwd:0,bend:.25}]}), {t, front:true, back:true, weapon:"machete"});
+for (let i=0;i<4;i++){ const B=F.zombieBuild(i); F.figure(ctx, 700+i*300, 1000, 3.2, 1, B, F.frontWalk(t*3+i, B, i), {t, front:true}); }
+F.figure(ctx, 1650, 1020, 1.2, -1, F.BUILD.tank, F.P.roar(.8), {t, jaw:.8}); F.figure(ctx, 1250, 1060, 1.1, 1, F.BUILD.tank, F.pose({lean:.75,hunch:.35,neck:.1,hipY:10,nL:{h:.4,k:.6,f:0},fL:{h:-.3,k:.5,f:0},nA:{s:.35,e:.1,w:0},fA:{s:.15,e:.2,w:0}}), {t});
+window.done=true;
+</script></body></html>

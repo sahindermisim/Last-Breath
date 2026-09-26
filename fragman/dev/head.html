@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#000">
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="../js/config.js"></script><script src="../js/core.js"></script><script src="../js/side.js"></script><script src="../js/film/rig.js"></script>
+<script>
+const q=new URLSearchParams(location.search), t=+(q.get("t")||0);
+ctx.fillStyle="#7d8896"; ctx.fillRect(0,0,W,H);
+F.figure(ctx, 500, 1900, 6, 1, F.BUILD.ethan, F.P.stand(t), {t});
+F.figure(ctx, 1400, 1900, 6, 1, F.BUILD.sarah, F.P.stand(t), {t});
+window.done=true;
+</script></body></html>

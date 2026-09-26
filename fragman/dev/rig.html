@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#000}</style></head><body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="../js/config.js"></script><script src="../js/core.js"></script><script src="../js/side.js"></script><script src="../js/film/rig.js"></script>
+<script>
+const t = +(new URLSearchParams(location.search).get("t") || 0);
+const g = ctx;
+const gr = g.createLinearGradient(0,0,0,H); gr.addColorStop(0,"#3a4556"); gr.addColorStop(.7,"#8a95a4"); gr.addColorStop(1,"#1a1f26"); g.fillStyle=gr; g.fillRect(0,0,W,H);
+const glowAt=(x,y,r,c,a)=>{const q=g.createRadialGradient(x,y,0,x,y,r);q.addColorStop(0,`rgba(${c},${a})`);q.addColorStop(1,`rgba(${c},0)`);g.fillStyle=q;g.fillRect(x-r,y-r,2*r,2*r);};
+glowAt(960,700,700,"255,122,42",.55);
+const s=2.1, y0=860;
+F.figure(g, 150, y0, s, 1, F.BUILD.ethan, F.P.walk(t*6), {t, weapon:"machete", bladeRim:"rgba(220,230,240,.6)", rims:[{c:"rgba(255,140,60,.9)",dx:3}], halo:{c:"#ff7a2a",a:.6}});
+F.figure(g, 420, y0, s, 1, F.BUILD.ethan, F.P.stand(t), {t, weapon:"machete"});
+F.figure(g, 640, y0, s*.97, -1, F.BUILD.sarah, F.P.walk(t*6+1), {t, weapon:"smg", rims:[{c:"rgba(255,140,60,.9)",dx:-3}]});
+F.figure(g, 860, y0, s, 1, F.zombieBuild(1), F.P.shamble(t*3, F.zombieBuild(1), 0), {t});
+F.figure(g, 1060, y0, s, -1, F.zombieBuild(2), F.P.shamble(t*3+2, F.zombieBuild(2), 1), {t, halo:{c:"#ff7a2a",a:.7}});
+F.figure(g, 1400, y0+10, s*.62, 1, F.BUILD.tank, F.P.roar(.6+.4*Math.sin(t)), {t});
+F.figure(g, 1760, y0, s, 1, F.BUILD.ethan, F.front(), {t, front:true, back:true, weapon:"machete"});
+F.figure(g, 1700, 420, 1.3, 1, F.zombieBuild(3), F.frontWalk(t*3, F.zombieBuild(3), 0), {t, front:true});
+F.figure(g, 1850, 420, 1.3, 1, F.zombieBuild(4), F.frontWalk(t*3+1, F.zombieBuild(4), 1), {t, front:true});
+F.figure(g, 1560, 420, 1.3, 1, F.BUILD.sarah, F.P.sit(t), {t});
+F.figure(g, 1420, 420, 1.3, 1, F.BUILD.ethan, F.P.run(t*8), {t, weapon:"machete"});
+F.figure(g, 1260, 420, 1.3, 1, F.BUILD.ethan, F.P.swing(.4), {t, weapon:"machete"});
+window.done=true;
+</script></body></html>

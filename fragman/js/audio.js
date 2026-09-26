@@ -63,6 +63,14 @@ const SFX = {
     o.type = "sawtooth"; o.frequency.value = 48; l.frequency.value = 6; lg.gain.value = 9; fl.type = "lowpass"; fl.frequency.value = 260;
     l.connect(lg).connect(o.frequency); env(g.gain, at, .4, .09, 1.6); sg.gain.value = 1.4; o.connect(fl).connect(g).connect(bus); g.connect(sg).connect(rev); o.start(at); l.start(at); o.stop(at + 2.3); l.stop(at + 2.3);
   },
+  creak: at => { tone(at, .6, { type: "sawtooth", f: 95, f2: 72, peak: .035, a: .15 }); nz(at, .6, { type: "bandpass", f: 900, f2: 700, q: 9, peak: .05, a: .15 }); },
+  thunderFar: at => { nz(at, 3.5, { f: 220, f2: 60, peak: .45, a: .6, send: .5 }); tone(at, 3, { f: 38, f2: 28, peak: .3, a: .5 }); },
+  gun: at => { nz(at, .06, { type: "highpass", f: 2500, peak: .8 }); nz(at, .5, { type: "bandpass", f: 1200, f2: 300, q: .5, peak: 1, send: .45 }); tone(at, .4, { f: 120, f2: 32, peak: 1 }); nz(at + .02, 1.6, { f: 500, f2: 90, peak: .35, send: .6 }); },
+  slashSlow: at => { nz(at - .5, .3, { type: "bandpass", f: 180, f2: 1400, q: 1.6, peak: .5, a: .5, send: .4 }); },
+  glass: at => { nz(at, .5, { type: "highpass", f: 3500, peak: .55, send: .3 }); for (let i = 0; i < 14; i++) tone(at + AR() * .5, .25 + AR() * .3, { type: "triangle", f: 2500 + AR() * 5000, peak: .035, send: .3 }); },
+  tankRoar: at => { SFX.growl(at, true); SFX.growl(at + .05, true); nz(at, 1.4, { type: "bandpass", f: 320, f2: 140, q: 1.2, peak: .7, a: .08, send: .5 }); tone(at, 1.6, { type: "sawtooth", f: 55, f2: 38, peak: .25, a: .06 }); tone(at, 1.8, { f: 34, f2: 26, peak: .6 }); },
+  breathF: (at, dur = 1.3) => { nz(at, dur * .45, { type: "bandpass", f: 1300, f2: 1000, q: 1, peak: .12, a: dur * .45 }); nz(at + dur * .5, dur * .4, { type: "bandpass", f: 900, f2: 700, q: 1, peak: .08, a: .1 }); },
+  crackleSoft: at => nz(at, .02 + AR() * .03, { type: "bandpass", f: 2500 + AR() * 3000, q: 1.5, peak: .03 + AR() * .05 }),
   tvOn: at => { nz(at, .05, { type: "highpass", f: 1500, peak: .5 }); tone(at, .4, { f: 15600, peak: .02 }); },
   tvOff: at => { tone(at, .35, { f: 900, f2: 60, peak: .3 }); nz(at, .08, { type: "highpass", f: 2000, peak: .4 }); },
   glitch: at => { for (let i = 0; i < 6; i++) nz(at + i * .09, .05, { type: "bandpass", f: 400 + AR() * 3000, q: 3, peak: .35 }); },
@@ -95,11 +103,11 @@ function interp(keys, t) {
   return keys[keys.length - 1][1];
 }
 function keyframes(pr, keys) { pr.setValueAtTime(interp(keys, MIX.t0), MIX.when); for (const [t, v] of keys) if (t > MIX.t0) pr.linearRampToValueAtTime(v, TT(t)); }
-const DRONE_KEYS = [[0, 0], [1, .22], [6, .38], [8, .16], [20, .12], [49, .14], [64.9, .3], [65, .2], [86.95, .26], [87, 0], [100.5, 0], [100.55, .24], [108, .16], [110, 0]];
-const RAIN_KEYS = [[0, 0], [20, 0], [20.6, .12], [38, .12], [49, .1], [65, .08], [86.95, .08], [87, 0], [89, 0], [89.8, .035], [100.45, .035], [100.5, 0]];
-const WIND_KEYS = [[0, 0], [20, 0], [21, .06], [49, .06], [65, .04], [86.95, .04], [87, 0]];
-const TV_KEYS = [[0, 0], [8, 0], [8.05, .16], [14.7, .16], [14.75, .32], [15.35, .32], [15.45, 0], [28.2, 0], [28.3, .12], [31.35, .12], [31.4, 0]];
-const PAD_KEYS = [[0, 0], [20, 0], [23, .045], [48, .045], [49, .03], [64.8, .09], [65, .05], [86.95, .05], [87, 0], [90.5, 0], [92.5, .025], [100.45, .025], [100.5, 0]];
+const DRONE_KEYS = [[0, 0], [1, .22], [6, .38], [8, .16], [20, .12], [56.5, .12], [72.9, .3], [78.4, .35], [78.5, .2], [103.45, .3], [103.5, 0], [118.5, 0], [118.55, .26], [128, .15], [130.5, 0]];
+const RAIN_KEYS = [[0, 0], [20, 0], [21, .13], [41.5, .13], [41.6, .07], [56.5, .1], [69.5, .1], [69.6, .02], [72.9, .03], [78.5, .08], [103.45, .08], [103.5, 0], [105.5, 0], [107, .035], [118.4, .035], [118.5, 0]];
+const WIND_KEYS = [[0, 0], [20, 0], [21.5, .09], [41.5, .09], [41.6, .03], [56.5, .05], [69.5, 0], [78.5, .04], [103.45, .04], [103.5, 0]];
+const TV_KEYS = [[0, 0], [8, 0], [8.05, .16], [14.7, .16], [14.75, .32], [15.35, .32], [15.45, 0], [30.9, 0], [31, .13], [34.05, .13], [34.1, 0]];
+const PAD_KEYS = [[0, 0], [20, 0], [22, .025], [41, .025], [42, .06], [56, .06], [56.5, .04], [69.4, .1], [69.6, .05], [78.4, .08], [78.5, .05], [103.45, .05], [103.5, 0], [118.5, 0], [118.6, .05], [129, .03], [130.5, 0]];
 function musicKeys() {
   const M = CONFIG.music, v = M.volume, keys = [[0, 0], [M.startAt, 0], [M.startAt + 3, v]];
   const wins = [];
@@ -113,27 +121,31 @@ function buildCues() {
   // giriş (0:00–0:20) — değiştirilmedi
   const c = [[.8, "riser", 2.8], [3.9, "shimmer", 1.6], [8, "tvOn"], [11.9, "cut"], [14.75, "glitch"], [15.35, "tvOff"], [16.2, "softThud"]];
   for (const d of DIALOG) if (d.kind) c.push([d.a, "murmur", [d.b - d.a, d.kind]]);
-  // 1–2) sessiz dünya, Sarah: ateş çıtırtısı, radyo
-  for (let i = 0; i < 40; i++) c.push([20.3 + mulberry(40 + i)() * 5, "crackle"]);
-  for (let i = 0; i < 70; i++) c.push([38.2 + mulberry(140 + i)() * 10.6, "crackle"]);
-  c.push([28.3, "radioClick"], [31.4, "radioClick"]);
-  // 3) yükseliş: hızlanan kalp atışı, kartlar, sürgü
-  for (let x = 49, k = 0; x < 64.8; k++) { const q = (x - 49) / 15.8; c.push([x, "heart", .55 + .45 * q]); x += lerp(1.15, .42, q); }
-  c.push([55.2, "hitLite"], [57.0, "hitLite"], [61.8, "rack"]);
-  // 4) patlama: kesmeler vuruş ızgarasında; müzik dosyası yoksa ritim sentezlenir
-  const starts = new Set(); let prev = "";
-  for (const s of BURST) { if (s.k !== prev) starts.add(s.a); prev = s.k; }
+  const M = F.marks, R = mulberry(555);
+  // 1) sessiz dünya: rüzgâr, uzak gök gürültüsü, kablo gıcırtısı, radyo
+  c.push([23.5, "thunderFar"], [27.3, "creak"], [28.4, "creak"], [29.5, "creak"], [27.6, "radioClick"], [28.45, "radioClick"], [29.25, "radioClick"], [29.8, "radioClick"], [30.9, "radioClick"], [34.1, "radioClick"], [36.5, "thunderFar"]);
+  // 2) ateş başı: yoğun çıtırtı
+  for (let i = 0; i < 150; i++) c.push([41.6 + R() * 14.8, "crackle"]); for (let i = 0; i < 40; i++) c.push([49 + R() * 3, "crackle"]);
+  // 3) yükseliş: hızlanan kalp, uzak hırıltılar, kartlar, sürgü, tek atış
+  for (let x = 56.5; x < 72.8;) { const q = (x - 56.5) / 16.3; c.push([x, "heart", .5 + .5 * q]); x += lerp(1.2, .4, q); }
+  for (let i = 0; i < 9; i++) c.push([59 + i * 1.2 + R() * .5, "growl", i % 3 === 0]);
+  c.push([69.7, "hitLite"], [71.4, "hitLite"], [75.6, "rack"], [M.FLASH3, "gun"], [M.FLASH3, "hitLite"]);
+  // 4) patlama: ritim (müzik dosyası yoksa sentez), aksiyon sesleri
   if (!MUSIC_AB) {
-    for (let n = 0; n < 44; n++) { const x = BURST_T0 + n * BEAT; c.push([x, "kick"]); if (n >= 18) c.push([x + BEAT / 2, "hat"]); }
-    for (const s of BURST) c.push([s.a, starts.has(s.a) ? "braam" : "taiko"]);
-    c.push([CLIMAX - 1.5, "riser", 1.45]);
+    for (let n = 0; n < 50; n++) { const x = F.beat(n); c.push([x, "kick"]); if (n >= 18) c.push([x + .25, "hat"]); }
+    for (const b of [0, 8, 18, 26, 32, 38]) c.push([F.beat(b), "braam"]);
+    c.push([F.beat(38), "riser", 1.9]);
   }
-  c.push([65, "shotgun"], [67, "shotgun"], [69.5, "wood"], [70.4, "growl"], [71.5, "wood"], [74.2, "slash"], [75, "growl", true], [78, "horde", 1.2], [80, "growl"],
-    [82, "growl", true], [83, "thud"], [84, "thud"], [CLIMAX, "hit"]);
-  // 5) ani sessizlik: yalnızca nefes
-  c.push([87.4, "breath", 1.4], [88.9, "breath", 1.6]);
+  for (const x of M.FLASHES) c.push([x, "gun"], [x + .05, "growl"]);
+  c.push([M.LIGHT4[0], "thunder"], [M.LIGHT4[1], "thunder"], [84.85, "slashSlow"], [85.16, "thud"], [85.2, "growl", true]);
+  c.push([87.6, "growl"], [88.3, "wood"], [89.0, "growl"], [M.BREAK, "wood"], [M.BREAK, "glass"], [M.BREAK + .3, "horde", 1]);
+  c.push([91.5, "horde", 1.5], [92.6, "smg", 4], [94.5, "horde", 2], [95.3, "growl", true]);
+  c.push([98.3, "whoosh"], [M.LAND, "hit"], [M.LAND, "boom"], [M.LAND + .5, "tankRoar"], [M.ROAR_FL, "hitLite"], [M.ROAR_FL, "tankRoar"]);
+  // 5) ani sessizlik: iki kişinin nefesi
+  for (let x = 104; x < 117.5; x += 2.4) { c.push([x, "breath", 1.5]); c.push([x + 1.2, "breathF", 1.3]); }
+  for (let i = 0; i < 40; i++) c.push([106.5 + R() * 11, "crackleSoft"]);
   // 6) kapanış
-  c.push([100.5, "hit"], [104.3, "softThud"], [108, "growlFar"]);
+  c.push([118.5, "hit"], [123.5, "softThud"], [128.4, "growlFar"]);
   CUES = c.sort((x, y) => x[0] - y[0]);
 }
 function makeNoise(ac) { const b = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), d = b.getChannelData(0), R = mulberry(77); for (let i = 0; i < d.length; i++) d[i] = R() * 2 - 1; return b; }
