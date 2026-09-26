@@ -25,7 +25,7 @@ window.RENDER = {
     return Math.ceil(WAV.length / 2e6);
   },
   chunk(i) { const sub = WAV.subarray(i * 2e6, (i + 1) * 2e6); let s = ""; for (let k = 0; k < sub.length; k += 32768) s += String.fromCharCode.apply(null, sub.subarray(k, k + 32768)); return btoa(s); },
-  srt, state: () => STATE, montage: () => MONTAGE, dialog: () => DIALOG,
+  srt, state: () => STATE, montage: () => BURST, dialog: () => DIALOG,
 };
 
 /* ---------- canlı önizleme ---------- */

@@ -7,45 +7,37 @@ SPİKER: …yetkililer durumun kontrol altında olduğunu açıkladı.
 SPİKER: Vatandaşların evlerinde kalması…
 
 3
-00:00:22,400 --> 00:00:24,900
-ETHAN: Kimse gelmedi.
+00:00:28,400 --> 00:00:31,200
+RADYO: …tahliye noktaları… düştü… tekrar ediyorum…
 
 4
-00:00:26,000 --> 00:00:28,600
-ETHAN: Kimse gelmeyecek.
+00:00:32,200 --> 00:00:35,200
+ETHAN: Başta sayıyordum. Günleri… ölüleri.
 
 5
-00:00:40,400 --> 00:00:42,600
-SARAH: Kıpırdama.
+00:00:36,000 --> 00:00:37,700
+ETHAN: Sonra bıraktım.
 
 6
-00:00:43,000 --> 00:00:45,400
-SARAH: …Sen onlardan değilsin.
+00:00:39,000 --> 00:00:41,600
+SARAH: Neden hâlâ yürüyoruz, Ethan?
 
 7
-00:00:45,900 --> 00:00:47,900
-ETHAN: Henüz değil.
+00:00:44,000 --> 00:00:47,200
+ETHAN: Çünkü durursak… onlar kazanır.
 
 8
-00:00:48,300 --> 00:00:50,800
-SARAH: Sırt sırta, o zaman.
+00:00:59,100 --> 00:01:01,100
+SARAH: Kaç tane var?
 
 9
-00:00:53,200 --> 00:00:56,400
-DR. E. WARREN · KAYIT: Komisyon sahada test istiyor.
+00:01:02,400 --> 00:01:04,000
+ETHAN: Yeterince.
 
 10
-00:00:56,600 --> 00:00:59,400
-DR. E. WARREN · KAYIT: Laboratuvarda değil… sahada.
+00:01:29,600 --> 00:01:33,600
+SARAH: Söz ver bana… onlardan biri olmayacağım.
 
 11
-00:01:00,200 --> 00:01:02,400
-SARAH: Bu bir kaza değildi.
-
-12
-00:01:02,800 --> 00:01:04,900
-ETHAN: Hiçbir zaman değildi.
-
-13
-00:01:35,400 --> 00:01:38,400
-ETHAN: Son nefesime kadar.
+00:01:37,300 --> 00:01:39,600
+ETHAN: …Söz veriyorum.

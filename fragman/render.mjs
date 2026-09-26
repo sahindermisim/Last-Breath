@@ -82,7 +82,7 @@ const nChunks = await main.evaluate(() => RENDER.audio());
 const parts = []; for (let i = 0; i < nChunks; i++) parts.push(Buffer.from(await main.evaluate(i => RENDER.chunk(i), i), "base64"));
 const wavPath = path.join(OUT, "audio.wav"); fs.writeFileSync(wavPath, Buffer.concat(parts));
 fs.writeFileSync(path.join(OUT, "trailer.srt"), await main.evaluate(() => RENDER.srt()));
-fs.writeFileSync(path.join(OUT, "montaj.json"), JSON.stringify(await main.evaluate(() => RENDER.montage()), null, 1));
+fs.writeFileSync(path.join(OUT, "kesmeler.json"), JSON.stringify(await main.evaluate(() => RENDER.montage()), null, 1));
 
 if (args["audio-only"]) {
   const mp4 = path.join(OUT, "trailer.mp4"), tmp = path.join(OUT, "trailer_tmp.mp4");
